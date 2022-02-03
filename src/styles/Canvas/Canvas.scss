@@ -1,0 +1,59 @@
+#canvas-page {
+  .shape-dropdown-toggle,
+  .export-dropdown-toggle {
+    height: 40px;
+    border-radius: 6px !important;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 14px;
+    line-height: 14px;
+    border: none;
+    box-shadow: none;
+  }
+
+  .shape-dropdown-toggle {
+    background-color: #4dc2e7 !important;
+  }
+
+  .export-dropdown-toggle {
+    background-color: #fdaf53 !important;
+  }
+
+  .dropdown-menu {
+    background-color: #c4c4c4;
+    background: #ffffff;
+    a {
+      display: flex;
+      align-items: center;
+    }
+  }
+
+  .save-btn {
+    height: 40px;
+    background-color: #80d077;
+    border: none;
+    border-radius: 6px;
+    box-shadow: none;
+  }
+
+  .card {
+    h3 {
+      font-weight: bold;
+      font-size: 18px;
+      line-height: 27px;
+    }
+    .input-group-text {
+      font-size: 14px;
+      line-height: 16px;
+      color: #898f88;
+    }
+    .input-group {
+      border: 1px solid #617d5e;
+      box-sizing: border-box;
+      border-radius: 4px;
+    }
+    height: 80vh;
+    background: #f0f8ef;
+    border-radius: 6px;
+  }
+}
