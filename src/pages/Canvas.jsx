@@ -1,8 +1,8 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 
 // imported fake data
-import shapesData from '../data/shapesData.json';
-import canvasData from '../data/canvasData.json';
+// import shapesData from '../data/shapesData.json';
+import canvassesData from '../data/canvassesData.json';
 
 // imported react bootstrap components
 import {
@@ -31,14 +31,23 @@ import RectangleShape from '../components/canvas/RectangleShape';
 import Properties from '../components/canvas/Properties';
 import CircleShape from '../components/canvas/CircleShape';
 import TriangleShape from '../components/canvas/TriangleShape';
+import { useParams } from 'react-router-dom';
 
 const Canvas = () => {
-  const [shapes, setShapes] = useState(shapesData);
+  const [canvas, setCanvas] = useState({});
+  const [shape, setShape] = useState({});
   const [selectedId, selectShape] = useState(null);
+
+  const { id } = useParams();
+
+  useEffect(() => {
+    const canvasData = canvassesData?.filter((kanvas) => id == kanvas?.id);
+    setCanvas(canvasData[0]);
+  }, [id]);
 
   // creates a new rectangle shape
   const newRect = () => ({
-    id: 1,
+    id: canvas?.shapes?.length + 1,
     name: 'Rectangle 1',
     shape: 'Rectangle',
     x: 250,
@@ -60,15 +69,16 @@ const Canvas = () => {
   });
 
   // create a rectangle
-  const handleCreateRect = (e) => {
+  const handleCreateRect = () => {
     console.log('this is rectangle');
-    setShapes([...shapes, { ...newRect() }]);
+    const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newRect() }] };
+    setCanvas(currentShapes);
   };
 
   // create a circle
   const handleCreateCircle = () => {
     console.log('this is circle');
-    setShapes([...shapes, { ...newCircle() }]);
+    setCanvas([...canvas, { ...newCircle() }]);
   };
 
   // deselect when clicked on empty area
@@ -76,9 +86,11 @@ const Canvas = () => {
     const clickedOnEmpty = e.target === e.target.getStage();
     if (clickedOnEmpty) {
       selectShape(null);
+      setShape({});
     }
   };
 
+  // export canvas
   const downloadURI = (uri, name) => {
     const link = document.createElement('a');
     link.download = name;
@@ -99,7 +111,21 @@ const Canvas = () => {
     alert("Sorry! We're not able to export as SVG.");
   };
 
-  console.log(shapes);
+  // changing properties
+  const onChangeHandler = (e) => {
+    console.log('handle on change');
+    if (e.target.name === 'width') {
+      console.log(e.target.value);
+      const rects = canvas?.shapes?.slice();
+      rects[selectedId].width = e.target.value;
+      setCanvas({ ...canvas, shapes: rects });
+      // const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newRect() }] };
+      // setCanvas(currentShapes);
+    }
+  };
+
+  console.log('canvas -> ', canvas);
+  console.log('shape -> ', shape);
 
   return (
     <>
@@ -132,7 +158,8 @@ const Canvas = () => {
             {/* shapes */}
             <Card className='p-4 border-0'>
               <h3 className='text-center'>Shapes</h3>
-              <InputGroup className='mb-3 border'>
+
+              {/* <InputGroup className='mb-3 border'>
                 <FormControl
                   type='text'
                   placeholder='Add a Shape first'
@@ -140,7 +167,20 @@ const Canvas = () => {
                   aria-describedby='title'
                   className='border-0 text-center shadow-none'
                 />
-              </InputGroup>
+              </InputGroup> */}
+
+              {canvas?.shapes?.map(({ id, name }, key) => (
+                <InputGroup key={key} className='mb-3 border'>
+                  <FormControl
+                    type='text'
+                    placeholder='Add a Shape first'
+                    defaultValue={name}
+                    aria-label='title'
+                    aria-describedby='title'
+                    className='border-0 shadow-none'
+                  />
+                </InputGroup>
+              ))}
             </Card>
             {/* end shapes */}
           </Col>
@@ -169,7 +209,7 @@ const Canvas = () => {
                 ref={stageRef}
               >
                 <Layer>
-                  {shapes.map((shape, key) => {
+                  {canvas?.shapes?.map((shape, key) => {
                     if (shape?.shape === 'Rectangle') {
                       return (
                         <RectangleShape
@@ -178,11 +218,14 @@ const Canvas = () => {
                           isSelected={key === selectedId}
                           onSelect={() => {
                             selectShape(key);
+                            console.log(selectedId);
+                            setShape(shape);
                           }}
                           onChange={(newAttrs) => {
-                            const rects = shapes.slice();
+                            console.log('newAttrs ->', newAttrs);
+                            const rects = canvas?.shapes?.slice();
                             rects[key] = newAttrs;
-                            setShapes(rects);
+                            setCanvas({ ...canvas, shapes: rects });
                           }}
                         />
                       );
@@ -196,9 +239,9 @@ const Canvas = () => {
                             selectShape(key);
                           }}
                           onChange={(newAttrs) => {
-                            const rects = shapes.slice();
+                            const rects = canvas.slice();
                             rects[key] = newAttrs;
-                            setShapes(rects);
+                            setCanvas(rects);
                           }}
                         />
                       );
@@ -212,9 +255,9 @@ const Canvas = () => {
                             selectShape(key);
                           }}
                           onChange={(newAttrs) => {
-                            const rects = shapes.slice();
+                            const rects = canvas.slice();
                             rects[key] = newAttrs;
-                            setShapes(rects);
+                            setCanvas(rects);
                           }}
                         />
                       );
@@ -246,7 +289,7 @@ const Canvas = () => {
             {/* end save and export button */}
 
             {/* properties */}
-            <Properties />
+            <Properties selectedId={selectedId} shape={shape} onChangeHandler={onChangeHandler} />
             {/* end properties */}
           </Col>
           {/* end right column */}

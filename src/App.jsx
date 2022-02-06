@@ -11,7 +11,7 @@ function App() {
     <Routes>
       <Route path='/' element={<DefaultLayout />}>
         <Route index element={<Home />} />
-        <Route path='canvas' element={<Canvas />} />
+        <Route path='canvas/:id' element={<Canvas />} />
         <Route path='login' element={<Login />} />
         <Route path='*' element={<NoMatch />} />
       </Route>

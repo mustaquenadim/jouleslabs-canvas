@@ -1,10 +1,11 @@
 import React from 'react';
+import { Line } from 'react-konva';
 
 const TriangleShape = () => {
   return (
-    <div>
-      <h1>Triangle Shape</h1>
-    </div>
+    <>
+      <Line closed points={[0, 100, 100, 100, 0, 0]} fill='red' />
+    </>
   );
 };
 

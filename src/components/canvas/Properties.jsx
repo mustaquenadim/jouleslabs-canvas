@@ -1,7 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, FormControl, InputGroup } from 'react-bootstrap';
 
-const Properties = () => {
+// imported fake data
+import canvassesData from '../../data/canvassesData.json';
+
+const Properties = ({ selectedId, shape, onChangeHandler }) => {
   return (
     <div>
       <Card className='p-3 border-0'>
@@ -11,12 +14,14 @@ const Properties = () => {
             Shape
           </InputGroup.Text>
           <FormControl
+            name='shape'
             type='text'
-            defaultValue='Rectangle'
+            defaultValue={shape?.shape}
             placeholder='Enter Shape'
             aria-label='shape'
             aria-describedby='shape'
             className='border-0 text-end shadow-none'
+            onChange={onChangeHandler}
           />
         </InputGroup>
 
@@ -25,13 +30,15 @@ const Properties = () => {
             Width
           </InputGroup.Text>
           <FormControl
+            name='width'
             type='number'
-            defaultValue='123'
+            defaultValue={shape?.width}
             min='0'
             placeholder='Enter Width'
             aria-label='width'
             aria-describedby='width'
             className='border-0 text-end shadow-none'
+            onChange={onChangeHandler}
           />
         </InputGroup>
 
@@ -40,8 +47,9 @@ const Properties = () => {
             Height
           </InputGroup.Text>
           <FormControl
+            name='height'
             type='number'
-            defaultValue='123'
+            defaultValue={shape?.height}
             min='0'
             placeholder='Enter Height'
             aria-label='height'
@@ -55,8 +63,9 @@ const Properties = () => {
             X Axis
           </InputGroup.Text>
           <FormControl
+            name='x'
             type='number'
-            defaultValue='123'
+            defaultValue={shape?.x}
             placeholder='Enter X'
             aria-label='x-axis'
             aria-describedby='x-axis'
@@ -69,8 +78,9 @@ const Properties = () => {
             Y Axis
           </InputGroup.Text>
           <FormControl
+            name='y'
             type='number'
-            defaultValue='123'
+            defaultValue={shape?.y}
             placeholder='Enter Y'
             aria-label='y-axis'
             aria-describedby='y-axis'
@@ -83,8 +93,9 @@ const Properties = () => {
             Color
           </InputGroup.Text>
           <FormControl
+            name='color'
             type='color'
-            defaultValue='#D9E7D7'
+            defaultValue={shape?.color}
             placeholder='Enter Color'
             aria-label='color'
             aria-describedby='color'
