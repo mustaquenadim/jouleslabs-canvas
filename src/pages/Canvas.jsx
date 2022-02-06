@@ -2,8 +2,9 @@ import React, { useRef, useState } from 'react';
 
 // imported fake data
 import shapesData from '../data/shapesData.json';
+import canvasData from '../data/canvasData.json';
 
-// imported react bootstrap
+// imported react bootstrap components
 import {
   Button,
   Card,
@@ -35,26 +36,26 @@ const Canvas = () => {
   const [shapes, setShapes] = useState(shapesData);
   const [selectedId, selectShape] = useState(null);
 
-  // creates a random number between 1 and a number parameter passed in as "num"
-  const random = (num) => Math.floor(Math.random() * num) + 1;
-
-  // creates a new object with random: x, y, width, and height values (the number passed in represents a maximum value)
+  // creates a new rectangle shape
   const newRect = () => ({
-    title: 'Rectangle',
+    id: 1,
+    name: 'Rectangle 1',
     shape: 'Rectangle',
-    x: random(250),
-    y: random(300),
-    width: random(100),
-    height: random(100),
+    x: 250,
+    y: 250,
+    width: 100,
+    height: 100,
     fill: '#D9E7D7',
   });
 
+  // creates a new circle shape
   const newCircle = () => ({
-    title: 'Circle',
+    id: 1,
+    name: 'Circle 1',
     shape: 'Circle',
-    x: random(250),
-    y: random(300),
-    radius: random(10),
+    x: 0,
+    y: 0,
+    radius: 50,
     fill: '#D9E7D7',
   });
 
@@ -174,9 +175,9 @@ const Canvas = () => {
                         <RectangleShape
                           key={key}
                           shapeProps={shape}
-                          isSelected={shape.key === selectedId}
+                          isSelected={key === selectedId}
                           onSelect={() => {
-                            selectShape(shape.key);
+                            selectShape(key);
                           }}
                           onChange={(newAttrs) => {
                             const rects = shapes.slice();
@@ -190,9 +191,9 @@ const Canvas = () => {
                         <CircleShape
                           key={key}
                           shapeProps={shape}
-                          isSelected={shape.key === selectedId}
+                          isSelected={key === selectedId}
                           onSelect={() => {
-                            selectShape(shape.key);
+                            selectShape(key);
                           }}
                           onChange={(newAttrs) => {
                             const rects = shapes.slice();
@@ -206,9 +207,9 @@ const Canvas = () => {
                         <TriangleShape
                           key={key}
                           shapeProps={shape}
-                          isSelected={shape.key === selectedId}
+                          isSelected={key === selectedId}
                           onSelect={() => {
-                            selectShape(shape.key);
+                            selectShape(key);
                           }}
                           onChange={(newAttrs) => {
                             const rects = shapes.slice();

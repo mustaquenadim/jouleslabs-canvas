@@ -7,6 +7,20 @@ const Properties = () => {
       <Card className='p-3 border-0'>
         <h3 className='text-center'>Properties</h3>
         <InputGroup className='mb-3'>
+          <InputGroup.Text id='shape' className='bg-white border-0'>
+            Shape
+          </InputGroup.Text>
+          <FormControl
+            type='text'
+            defaultValue='Rectangle'
+            placeholder='Enter Shape'
+            aria-label='shape'
+            aria-describedby='shape'
+            className='border-0 text-end shadow-none'
+          />
+        </InputGroup>
+
+        <InputGroup className='mb-3'>
           <InputGroup.Text id='width' className='bg-white border-0'>
             Width
           </InputGroup.Text>
