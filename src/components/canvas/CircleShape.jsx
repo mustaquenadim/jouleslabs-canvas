@@ -1,5 +1,5 @@
-import React, { useEffect, useRef } from 'react';
-import { Circle } from 'react-konva';
+import { useEffect, useRef } from 'react';
+import { Circle, Transformer } from 'react-konva';
 
 const CircleShape = ({ shapeProps, isSelected, onSelect, onChange }) => {
   const shapeRef = useRef();
@@ -15,8 +15,6 @@ const CircleShape = ({ shapeProps, isSelected, onSelect, onChange }) => {
   return (
     <>
       <Circle
-        radius={50}
-        fill='green'
         onClick={onSelect}
         onTap={onSelect}
         ref={shapeRef}
@@ -39,10 +37,22 @@ const CircleShape = ({ shapeProps, isSelected, onSelect, onChange }) => {
             ...shapeProps,
             x: node.x(),
             y: node.y(),
-            radius: Math.max(5, node.radius() * scaleX),
+            width: Math.max(5, node.width() * scaleX),
+            height: Math.max(node.height() * scaleY),
           });
         }}
       />
+      {isSelected && (
+        <Transformer
+          ref={trRef}
+          boundBoxFunc={(oldBox, newBox) => {
+            if (newBox.width < 5 || newBox.height < 5) {
+              return oldBox;
+            }
+            return newBox;
+          }}
+        />
+      )}
     </>
   );
 };

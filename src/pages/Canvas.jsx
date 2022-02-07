@@ -36,6 +36,7 @@ import { useParams } from 'react-router-dom';
 const Canvas = () => {
   const [canvas, setCanvas] = useState({});
   const [shape, setShape] = useState({});
+  const [color, setColor] = useState('');
   const [selectedId, selectShape] = useState(null);
 
   const { id } = useParams();
@@ -59,26 +60,47 @@ const Canvas = () => {
 
   // creates a new circle shape
   const newCircle = () => ({
-    id: 1,
+    id: canvas?.shapes?.length + 1,
     name: 'Circle 1',
     shape: 'Circle',
-    x: 0,
-    y: 0,
+    x: 250,
+    y: 250,
     radius: 50,
+    fill: '#D9E7D7',
+  });
+
+  // creates a new triangle shape
+  const newTriangle = () => ({
+    id: canvas?.shapes?.length + 1,
+    name: 'Triangle 1',
+    shape: 'Triangle',
+    x: 250,
+    y: 250,
+    x1: 0,
+    y1: 100,
+    x2: 100,
+    y2: 100,
+    x3: 0,
+    y3: 0,
     fill: '#D9E7D7',
   });
 
   // create a rectangle
   const handleCreateRect = () => {
-    console.log('this is rectangle');
     const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newRect() }] };
     setCanvas(currentShapes);
   };
 
   // create a circle
   const handleCreateCircle = () => {
-    console.log('this is circle');
-    setCanvas([...canvas, { ...newCircle() }]);
+    const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newCircle() }] };
+    setCanvas(currentShapes);
+  };
+
+  // create a triangle
+  const handleCreateTriangle = () => {
+    const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newTriangle() }] };
+    setCanvas(currentShapes);
   };
 
   // deselect when clicked on empty area
@@ -88,6 +110,13 @@ const Canvas = () => {
       selectShape(null);
       setShape({});
     }
+  };
+
+  // save canvas on localstorage
+  const handleSaveData = () => {
+    console.log('saving data on localstorage!');
+    localStorage.setItem('canvas', [...canvas]);
+    // localStorage.clear();
   };
 
   // export canvas
@@ -101,7 +130,6 @@ const Canvas = () => {
   };
 
   const stageRef = useRef(null);
-
   const handleExportAsPNG = () => {
     const uri = stageRef.current.toDataURL();
     downloadURI(uri, 'stage.png');
@@ -116,16 +144,29 @@ const Canvas = () => {
     console.log('handle on change');
     if (e.target.name === 'width') {
       console.log(e.target.value);
-      const rects = canvas?.shapes?.slice();
-      rects[selectedId].width = e.target.value;
-      setCanvas({ ...canvas, shapes: rects });
+      const shape = canvas?.shapes?.slice();
+      shape[selectedId].width = e.target.value;
+      setCanvas({ ...canvas, shapes: shape });
+      // const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newRect() }] };
+      // setCanvas(currentShapes);
+    }
+    if (e.target.name === 'height') {
+      console.log(e.target.value);
+      const shape = canvas?.shapes?.slice();
+      shape[selectedId].height = e.target.value;
+      setCanvas({ ...canvas, shapes: shape });
+      // const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newRect() }] };
+      // setCanvas(currentShapes);
+    }
+    if (e.target.name === 'fill') {
+      setColor(e.target.value);
+      const shape = canvas?.shapes?.slice();
+      shape[selectedId].fill = e.target.value;
+      setCanvas({ ...canvas, shapes: shape });
       // const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newRect() }] };
       // setCanvas(currentShapes);
     }
   };
-
-  console.log('canvas -> ', canvas);
-  console.log('shape -> ', shape);
 
   return (
     <>
@@ -148,7 +189,7 @@ const Canvas = () => {
                 <Dropdown.Item onClick={handleCreateCircle}>
                   <BiCircle className='me-1' /> Circle
                 </Dropdown.Item>
-                <Dropdown.Item>
+                <Dropdown.Item onClick={handleCreateTriangle}>
                   <IoTriangleOutline className='me-1' /> Triangle
                 </Dropdown.Item>
               </Dropdown.Menu>
@@ -218,14 +259,13 @@ const Canvas = () => {
                           isSelected={key === selectedId}
                           onSelect={() => {
                             selectShape(key);
-                            console.log(selectedId);
                             setShape(shape);
                           }}
                           onChange={(newAttrs) => {
-                            console.log('newAttrs ->', newAttrs);
                             const rects = canvas?.shapes?.slice();
                             rects[key] = newAttrs;
                             setCanvas({ ...canvas, shapes: rects });
+                            setShape(shape);
                           }}
                         />
                       );
@@ -237,11 +277,13 @@ const Canvas = () => {
                           isSelected={key === selectedId}
                           onSelect={() => {
                             selectShape(key);
+                            setShape(shape);
                           }}
                           onChange={(newAttrs) => {
-                            const rects = canvas.slice();
-                            rects[key] = newAttrs;
-                            setCanvas(rects);
+                            const circle = canvas?.shapes?.slice();
+                            circle[key] = newAttrs;
+                            setCanvas({ ...canvas, shapes: circle });
+                            setShape(shape);
                           }}
                         />
                       );
@@ -253,11 +295,13 @@ const Canvas = () => {
                           isSelected={key === selectedId}
                           onSelect={() => {
                             selectShape(key);
+                            setShape(shape);
                           }}
                           onChange={(newAttrs) => {
-                            const rects = canvas.slice();
-                            rects[key] = newAttrs;
-                            setCanvas(rects);
+                            const circle = canvas?.shapes?.slice();
+                            circle[key] = newAttrs;
+                            setCanvas({ ...canvas, shapes: circle });
+                            setShape(shape);
                           }}
                         />
                       );
@@ -274,7 +318,9 @@ const Canvas = () => {
           <Col md={3}>
             {/* save and export button */}
             <div className='d-flex justify-content-between mb-3'>
-              <Button className='save-btn w-100 me-3'>Save</Button>
+              <Button className='save-btn w-100 me-3' onClick={handleSaveData}>
+                Save
+              </Button>
               <Dropdown className='w-100'>
                 <Dropdown.Toggle id='export-dropdown' className='export-dropdown-toggle w-100'>
                   Export

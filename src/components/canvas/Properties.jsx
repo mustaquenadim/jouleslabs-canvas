@@ -93,13 +93,14 @@ const Properties = ({ selectedId, shape, onChangeHandler }) => {
             Color
           </InputGroup.Text>
           <FormControl
-            name='color'
+            name='fill'
             type='color'
             defaultValue={shape?.color}
             placeholder='Enter Color'
             aria-label='color'
             aria-describedby='color'
             className='border-0 text-end shadow-none'
+            onChange={onChangeHandler}
           />
         </InputGroup>
       </Card>

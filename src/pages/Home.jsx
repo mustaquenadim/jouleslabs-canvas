@@ -12,17 +12,37 @@ import '../styles/home/home.scss';
 // imported fake data
 import canvassesData from '../data/canvassesData.json';
 
+// redux
+import { createCanvas } from '../redux/slice/canvasSlice';
+import { useSelector, useDispatch } from 'react-redux';
+
 const Home = () => {
-  const [canvasses, setCanvasses] = useState([]);
+  const dispatch = useDispatch();
+  const canvasCollection = useSelector((state) => state.canvas.canvasCollection);
+  console.log(canvasCollection);
+  // const [canvasses, setCanvasses] = useState([]);
 
-  useEffect(() => {
-    setCanvasses(canvassesData);
-  }, []);
+  // useEffect(() => {
+  //   setCanvasses(canvassesData);
+  // }, []);
 
-  // handle create new canvas
-  const handleCreateNewCanvas = () => {
-    console.log('handleCreateNewCanvas, creates a new canvas');
-  };
+  const newCanvas = () => ({
+    id: 1,
+    title: 'Untitled Canvas',
+    description: 'My First Canvas',
+    shapes: [
+      {
+        id: 1,
+        name: 'Rectangle 1',
+        shape: 'Rectangle',
+        x: 250,
+        y: 250,
+        width: 100,
+        height: 100,
+        fill: '#040404',
+      },
+    ],
+  });
 
   return (
     <>
@@ -33,14 +53,16 @@ const Home = () => {
             <Col>
               <Card
                 className='d-flex align-items-center justify-content-center'
-                onClick={handleCreateNewCanvas}
+                onClick={() => dispatch(createCanvas(newCanvas()))}
               >
-                <Card.Title as='h3' className='text-center'>
-                  Create a new Canvas
-                </Card.Title>
+                <Link to='canvas/1'>
+                  <Card.Title as='h3' className='text-center'>
+                    Create a new Canvas
+                  </Card.Title>
+                </Link>
               </Card>
             </Col>
-            {canvasses?.map(({ id, title }, key) => (
+            {canvasCollection?.map(({ id, title }, key) => (
               <Col key={key}>
                 <Link to={`canvas/${id}`} className='text-decoration-none'>
                   <Card className='d-flex align-items-center justify-content-center'>
