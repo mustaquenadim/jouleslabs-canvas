@@ -1,9 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
 
-// imported fake data
-// import shapesData from '../data/shapesData.json';
-import canvassesData from '../data/canvassesData.json';
-
 // imported react bootstrap components
 import {
   Button,
@@ -32,17 +28,18 @@ import Properties from '../components/canvas/Properties';
 import CircleShape from '../components/canvas/CircleShape';
 import TriangleShape from '../components/canvas/TriangleShape';
 import { useParams } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 const Canvas = () => {
   const [canvas, setCanvas] = useState({});
   const [shape, setShape] = useState({});
-  const [color, setColor] = useState('');
   const [selectedId, selectShape] = useState(null);
 
+  const canvasCollection = useSelector((state) => state.canvas.canvasCollection);
   const { id } = useParams();
 
   useEffect(() => {
-    const canvasData = canvassesData?.filter((kanvas) => id == kanvas?.id);
+    const canvasData = canvasCollection?.filter((kanvas) => id == kanvas?.id);
     setCanvas(canvasData[0]);
   }, [id]);
 
@@ -141,30 +138,31 @@ const Canvas = () => {
 
   // changing properties
   const onChangeHandler = (e) => {
-    console.log('handle on change');
     if (e.target.name === 'width') {
-      console.log(e.target.value);
+      console.log(Number(e.target.value));
       const shape = canvas?.shapes?.slice();
-      shape[selectedId].width = e.target.value;
+      shape[selectedId].width = parseInt(e.target.value);
       setCanvas({ ...canvas, shapes: shape });
-      // const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newRect() }] };
-      // setCanvas(currentShapes);
     }
     if (e.target.name === 'height') {
-      console.log(e.target.value);
       const shape = canvas?.shapes?.slice();
-      shape[selectedId].height = e.target.value;
+      shape[selectedId].height = Number(e.target.value);
       setCanvas({ ...canvas, shapes: shape });
-      // const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newRect() }] };
-      // setCanvas(currentShapes);
+    }
+    if (e.target.name === 'x') {
+      const shape = canvas?.shapes?.slice();
+      shape[selectedId].x = parseInt(e.target.value);
+      setCanvas({ ...canvas, shapes: shape });
+    }
+    if (e.target.name === 'y') {
+      const shape = canvas?.shapes?.slice();
+      shape[selectedId].y = Number(e.target.value);
+      setCanvas({ ...canvas, shapes: shape });
     }
     if (e.target.name === 'fill') {
-      setColor(e.target.value);
       const shape = canvas?.shapes?.slice();
       shape[selectedId].fill = e.target.value;
       setCanvas({ ...canvas, shapes: shape });
-      // const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newRect() }] };
-      // setCanvas(currentShapes);
     }
   };
 
@@ -229,11 +227,11 @@ const Canvas = () => {
 
           {/* mid column */}
           <Col md={6}>
-            {/* canvas */}
+            {/* canvas title */}
             <InputGroup className='mb-3'>
               <FormControl
                 type='text'
-                defaultValue='Untitled Canvas'
+                defaultValue={canvas.title}
                 placeholder='Enter Canvas Name'
                 aria-label='title'
                 aria-describedby='title'
@@ -241,6 +239,9 @@ const Canvas = () => {
                 plaintext
               />
             </InputGroup>
+            {/* end canvas title */}
+
+            {/* canvas */}
             <div id='artboard' className='border'>
               <Stage
                 width={500}

@@ -55,6 +55,7 @@ const Properties = ({ selectedId, shape, onChangeHandler }) => {
             aria-label='height'
             aria-describedby='height'
             className='border-0 text-end shadow-none'
+            onChange={onChangeHandler}
           />
         </InputGroup>
 
@@ -70,6 +71,7 @@ const Properties = ({ selectedId, shape, onChangeHandler }) => {
             aria-label='x-axis'
             aria-describedby='x-axis'
             className='border-0 text-end shadow-none'
+            onChange={onChangeHandler}
           />
         </InputGroup>
 
@@ -85,6 +87,7 @@ const Properties = ({ selectedId, shape, onChangeHandler }) => {
             aria-label='y-axis'
             aria-describedby='y-axis'
             className='border-0 text-end shadow-none'
+            onChange={onChangeHandler}
           />
         </InputGroup>
 

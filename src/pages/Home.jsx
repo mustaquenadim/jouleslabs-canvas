@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 // imported react router
 import { Link } from 'react-router-dom';
@@ -9,9 +9,6 @@ import { Card, Col, Container, Row } from 'react-bootstrap';
 // home page stylesheet
 import '../styles/home/home.scss';
 
-// imported fake data
-import canvassesData from '../data/canvassesData.json';
-
 // redux
 import { createCanvas } from '../redux/slice/canvasSlice';
 import { useSelector, useDispatch } from 'react-redux';
@@ -20,14 +17,9 @@ const Home = () => {
   const dispatch = useDispatch();
   const canvasCollection = useSelector((state) => state.canvas.canvasCollection);
   console.log(canvasCollection);
-  // const [canvasses, setCanvasses] = useState([]);
-
-  // useEffect(() => {
-  //   setCanvasses(canvassesData);
-  // }, []);
 
   const newCanvas = () => ({
-    id: 1,
+    id: canvasCollection.length + 1,
     title: 'Untitled Canvas',
     description: 'My First Canvas',
     shapes: [
