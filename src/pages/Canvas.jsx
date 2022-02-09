@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import { useRef, useState, useEffect } from 'react';
 
 // imported react bootstrap components
 import {
@@ -13,10 +13,9 @@ import {
 } from 'react-bootstrap';
 
 // imported react icons
-import { BiRectangle, BiCircle } from 'react-icons/bi';
-import { IoTriangleOutline } from 'react-icons/io5';
+import { AiFillDelete } from 'react-icons/ai';
 
-// imported react konva
+// imported react konva components
 import { Stage, Layer } from 'react-konva';
 
 // stylesheet
@@ -26,7 +25,12 @@ import '../styles/Canvas/Canvas.scss';
 import RectangleShape from '../components/canvas/RectangleShape';
 import Properties from '../components/canvas/Properties';
 import CircleShape from '../components/canvas/CircleShape';
+import StarShape from '../components/canvas/StarShape';
+import AddText from '../components/canvas/AddText';
+import ShapeSelection from '../components/canvas/ShapeSelection';
 import TriangleShape from '../components/canvas/TriangleShape';
+
+// redux
 import { useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
@@ -41,7 +45,7 @@ const Canvas = () => {
   useEffect(() => {
     const canvasData = canvasCollection?.filter((kanvas) => id == kanvas?.id);
     setCanvas(canvasData[0]);
-  }, [id]);
+  }, [id, canvasCollection]);
 
   // creates a new rectangle shape
   const newRect = () => ({
@@ -55,7 +59,7 @@ const Canvas = () => {
     fill: '#D9E7D7',
   });
 
-  // creates a new circle shape
+  // new circle shape
   const newCircle = () => ({
     id: canvas?.shapes?.length + 1,
     name: 'Circle 1',
@@ -66,7 +70,7 @@ const Canvas = () => {
     fill: '#D9E7D7',
   });
 
-  // creates a new triangle shape
+  // new triangle shape
   const newTriangle = () => ({
     id: canvas?.shapes?.length + 1,
     name: 'Triangle 1',
@@ -82,6 +86,36 @@ const Canvas = () => {
     fill: '#D9E7D7',
   });
 
+  // new star shape
+  const newStar = () => ({
+    id: canvas?.shapes?.length + 1,
+    name: 'Star 1',
+    shape: 'Star',
+    x: 250,
+    y: 250,
+    numPoints: 5,
+    innerRadius: 20,
+    outerRadius: 40,
+    fill: '#D9E7D7',
+  });
+
+  // write text
+  const newText = () => ({
+    id: canvas?.shapes?.length + 1,
+    name: 'Text 1',
+    shape: 'Text',
+    textEditVisible: false,
+    x: 0,
+    y: 0,
+    width: 400,
+    text: 'Simple Text',
+    fontFamily: 'Calibri',
+    fontSize: 30,
+    fontStyle: 'normal',
+    align: 'left',
+    fill: '#D9E7D7',
+  });
+
   // create a rectangle
   const handleCreateRect = () => {
     const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newRect() }] };
@@ -94,11 +128,62 @@ const Canvas = () => {
     setCanvas(currentShapes);
   };
 
+  // create a star
+  const handleCreateStar = () => {
+    const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newStar() }] };
+    setCanvas(currentShapes);
+  };
+
   // create a triangle
   const handleCreateTriangle = () => {
     const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newTriangle() }] };
     setCanvas(currentShapes);
   };
+
+  // write text
+  const handleAddText = () => {
+    const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newText() }] };
+    setCanvas(currentShapes);
+  };
+
+  const [newEditedText, setNewEditedText] = useState({});
+  const handleTextareaKeyDown = (e) => {
+    if (e.keyCode === 13) {
+      let { newTextObj } = this.state;
+
+      newTextObj.textEditVisible = false;
+      this.setState({
+        newTextObj,
+      });
+    }
+  };
+
+  const handleTextEdit = (e) => {
+    let { newTextObj } = this.state;
+    newTextObj.textValue = e.target.value;
+    this.setState({
+      newTextObj,
+    });
+  };
+
+  const handleTextDoubleClick = (e) => {
+    const absPos = e.target.getAbsolutePosition();
+    let { newTextObj } = this.state;
+    newTextObj.textEditVisible = true;
+    newTextObj.textX = absPos.x;
+    newTextObj.textY = absPos.y;
+    this.setState({
+      newTextObj,
+    });
+  };
+
+  // responsive stage
+  // const [stageWidth, setStageWidth] = useState(1000);
+  // window.resize(fitStageIntoParentContainer());
+  // const fitStageIntoParentContainer = () => {
+  //   const width = this.container.offsetWidth;
+  //   setStageWidth(width);
+  // };
 
   // deselect when clicked on empty area
   const checkDeselect = (e) => {
@@ -109,7 +194,7 @@ const Canvas = () => {
     }
   };
 
-  // save canvas on localstorage
+  // save canvas
   const handleSaveData = () => {
     console.log('saving data on localstorage!');
     localStorage.setItem('canvas', [...canvas]);
@@ -168,48 +253,26 @@ const Canvas = () => {
 
   return (
     <>
-      <Container id='canvas-page'>
+      <Container id='canvas-page' className='my-5'>
         <Row className='py-4 g-4'>
           {/* left column */}
           <Col md={3}>
             {/* shape dropdown */}
-            <Dropdown className='mb-3'>
-              <Dropdown.Toggle
-                id='shape-dropdown'
-                className='shape-dropdown-toggle w-100 shadow-none'
-              >
-                Add Shape
-              </Dropdown.Toggle>
-              <Dropdown.Menu className='w-100'>
-                <Dropdown.Item onClick={handleCreateRect}>
-                  <BiRectangle className='me-1' /> Rectangle
-                </Dropdown.Item>
-                <Dropdown.Item onClick={handleCreateCircle}>
-                  <BiCircle className='me-1' /> Circle
-                </Dropdown.Item>
-                <Dropdown.Item onClick={handleCreateTriangle}>
-                  <IoTriangleOutline className='me-1' /> Triangle
-                </Dropdown.Item>
-              </Dropdown.Menu>
-            </Dropdown>
+            <ShapeSelection
+              handleCreateRect={handleCreateRect}
+              handleCreateCircle={handleCreateCircle}
+              handleCreateStar={handleCreateStar}
+              handleCreateTriangle={handleCreateTriangle}
+              handleAddText={handleAddText}
+            />
             {/* end shape dropdown */}
 
             {/* shapes */}
-            <Card className='p-4 border-0'>
+            <Card className='shape-items p-4 border-0'>
               <h3 className='text-center'>Shapes</h3>
 
-              {/* <InputGroup className='mb-3 border'>
-                <FormControl
-                  type='text'
-                  placeholder='Add a Shape first'
-                  aria-label='title'
-                  aria-describedby='title'
-                  className='border-0 text-center shadow-none'
-                />
-              </InputGroup> */}
-
               {canvas?.shapes?.map(({ id, name }, key) => (
-                <InputGroup key={key} className='mb-3 border'>
+                <InputGroup key={key} className='mb-3 border d-flex align-items-center'>
                   <FormControl
                     type='text'
                     placeholder='Add a Shape first'
@@ -218,6 +281,7 @@ const Canvas = () => {
                     aria-describedby='title'
                     className='border-0 shadow-none'
                   />
+                  <AiFillDelete className='icon' />
                 </InputGroup>
               ))}
             </Card>
@@ -242,10 +306,17 @@ const Canvas = () => {
             {/* end canvas title */}
 
             {/* canvas */}
-            <div id='artboard' className='border'>
+            <div
+              id='artboard'
+              className='border'
+              // ref={(node) => {
+              //   this.container = node;
+              // }}
+            >
               <Stage
-                width={500}
-                height={500}
+                // width={this.state.stageWidth}
+                width={window.innerWidth}
+                height={window.innerHeight}
                 onMouseDown={checkDeselect}
                 onTouchStart={checkDeselect}
                 ref={stageRef}
@@ -306,10 +377,58 @@ const Canvas = () => {
                           }}
                         />
                       );
+                    } else if (shape?.shape === 'Star') {
+                      return (
+                        <StarShape
+                          key={key}
+                          shapeProps={shape}
+                          isSelected={key === selectedId}
+                          onSelect={() => {
+                            selectShape(key);
+                            setShape(shape);
+                          }}
+                          onChange={(newAttrs) => {
+                            const circle = canvas?.shapes?.slice();
+                            circle[key] = newAttrs;
+                            setCanvas({ ...canvas, shapes: circle });
+                            setShape(shape);
+                          }}
+                        />
+                      );
+                    } else if (shape?.shape === 'Text') {
+                      return (
+                        <AddText
+                          key={key}
+                          shapeProps={shape}
+                          isSelected={key === selectedId}
+                          onSelect={() => {
+                            selectShape(key);
+                            setShape(shape);
+                          }}
+                          onDblClick={(e) => handleTextDoubleClick(e)}
+                          onChange={(newAttrs) => {
+                            const circle = canvas?.shapes?.slice();
+                            circle[key] = newAttrs;
+                            setCanvas({ ...canvas, shapes: circle });
+                            setShape(shape);
+                          }}
+                        />
+                      );
                     }
                   })}
                 </Layer>
               </Stage>
+              <textarea
+                value={newEditedText.textValue}
+                style={{
+                  display: newEditedText.textEditVisible ? 'block' : 'none',
+                  position: 'absolute',
+                  top: newEditedText.y + 'px',
+                  left: newEditedText.x + 'px',
+                }}
+                onChange={(e) => handleTextEdit(e)}
+                onKeyDown={(e) => handleTextareaKeyDown(e)}
+              />
             </div>
             {/* end canvas */}
           </Col>

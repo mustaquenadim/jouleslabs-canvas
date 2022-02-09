@@ -28,6 +28,24 @@
     }
   }
 
+  .shape-items {
+    .icon {
+      margin: 8px;
+      padding: 3px;
+      font-size: 20px;
+      border-radius: 50%;
+    }
+    .icon:hover {
+      cursor: pointer;
+      background-color: #ffadad;
+      color: #ffffff;
+    }
+  }
+
+  #artboard {
+    overflow: hidden;
+  }
+
   .save-btn {
     height: 40px;
     background-color: #80d077;

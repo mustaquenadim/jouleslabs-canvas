@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
-import { Line, Transformer } from 'react-konva';
+import { Text, Transformer } from 'react-konva';
 
-const TriangleShape = ({ shapeProps, isSelected, onSelect, onChange }) => {
+const AddText = ({ shapeProps, isSelected, onSelect, onChange }) => {
   const shapeRef = useRef();
   const trRef = useRef();
 
@@ -11,12 +11,10 @@ const TriangleShape = ({ shapeProps, isSelected, onSelect, onChange }) => {
       trRef.current.getLayer().batchDraw();
     }
   }, [isSelected]);
+
   return (
     <>
-      <Line
-        closed
-        points={[0, 100, 100, 100, 0, 0]}
-        fill='red'
+      <Text
         onClick={onSelect}
         onTap={onSelect}
         ref={shapeRef}
@@ -59,4 +57,4 @@ const TriangleShape = ({ shapeProps, isSelected, onSelect, onChange }) => {
   );
 };
 
-export default TriangleShape;
+export default AddText;

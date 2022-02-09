@@ -1,23 +1,30 @@
 import React from 'react';
-import { Container, Navbar, NavDropdown } from 'react-bootstrap';
-import { Link } from 'react-router-dom';
+import { Button, Container, Navbar, NavDropdown } from 'react-bootstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useLocation } from 'react-router-dom';
 
 import brand_logo from '../../assets/images/brand_logo.png';
 import { setLoggedInUser } from '../../redux/slice/authSlice';
 import { handleSignOut, initializeLoginFramework } from '../login/LoginManager';
 
+// stylesheet
+import '../../styles/common/header.scss';
+
 const Header = () => {
-  // const { loggedInUser, setLoggedInUser } = useContext(UserContext);
+  const location = useLocation();
+  const dispatch = useDispatch();
+  const user = useSelector((state) => state.user);
+  console.log(user);
 
   initializeLoginFramework();
   const Logout = () => {
     console.log('I am logged out!');
     handleSignOut().then((res) => {
-      setLoggedInUser(res);
+      dispatch(setLoggedInUser(res));
     });
   };
   return (
-    <Navbar bg='light' expand='lg' sticky='top'>
+    <Navbar expand='lg' fixed='top'>
       <Container>
         <Navbar.Brand as={Link} to='/'>
           <img
@@ -29,16 +36,31 @@ const Header = () => {
           />{' '}
           JoulesLabs Canvas
         </Navbar.Brand>
-        <NavDropdown title='Dropdown' id='basic-nav-dropdown'>
-          <NavDropdown.Item as={Link} to='/'>
-            Mustaque Nadim
-          </NavDropdown.Item>
-          <NavDropdown.Item as={Link} to='/'>
-            My Canvas
-          </NavDropdown.Item>
-          <NavDropdown.Divider />
-          <NavDropdown.Item onClick={Logout}>Logout</NavDropdown.Item>
-        </NavDropdown>
+        {!user.isAuthenticated && !location.pathname.includes('/login') && (
+          <Button as={Link} to='/login'>
+            Sign Up
+          </Button>
+        )}
+        {user.isAuthenticated && (
+          <NavDropdown
+            title={
+              <img
+                className='thumbnail-image'
+                src={user?.profile?.payload?.userPhoto}
+                alt='user_pic'
+              />
+            }
+          >
+            <NavDropdown.Item as={Link} to='/'>
+              {user?.profile?.payload?.userName}
+            </NavDropdown.Item>
+            <NavDropdown.Item as={Link} to='/'>
+              My Canvases
+            </NavDropdown.Item>
+            <NavDropdown.Divider />
+            <NavDropdown.Item onClick={Logout}>Logout</NavDropdown.Item>
+          </NavDropdown>
+        )}
       </Container>
     </Navbar>
   );

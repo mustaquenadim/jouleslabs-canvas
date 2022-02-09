@@ -1,5 +1,33 @@
-#my-canvasses {
+#landing-page {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: linear-gradient(0deg, #4141414d, #4141414d),
+    url('../../assets/images/landing_banner.jpg');
+  background-color: rgba(0, 0, 0, 0.5);
+  background-size: cover;
+  background-position: center;
+}
+
+#your-canvases {
   .card {
     height: 10rem;
+    position: relative;
+    overflow: hidden;
+    color: #0b090a;
+    border-radius: 1rem;
+    .icon {
+      position: absolute;
+      bottom: -10px;
+      right: -10px;
+      color: grey;
+      opacity: 0.2;
+      font-size: 200px;
+    }
+  }
+  .card:hover {
+    color: #0466c8;
   }
 }

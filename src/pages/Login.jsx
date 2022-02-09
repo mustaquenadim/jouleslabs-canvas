@@ -20,7 +20,7 @@ import { setLoggedInUser } from '../redux/slice/authSlice';
 
 const Login = () => {
   const dispatch = useDispatch();
-  const [newUser, setNewUser] = useState(false);
+  const [newUser, setNewUser] = useState(true);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -35,7 +35,6 @@ const Login = () => {
     userPhoto: '',
   });
   // setLoggedInUser(user);
-  dispatch(setLoggedInUser(user));
 
   initializeLoginFramework();
 
@@ -70,19 +69,21 @@ const Login = () => {
     if (newUser && name && email && password) {
       createUserWithEmailAndPassword(name, email, password).then((res) => {
         res.userName = name;
-        setUser(res);
+        dispatch(setLoggedInUser(res));
         navigate(from);
+        reset({});
       });
     }
 
     if (!newUser && email && password) {
       signInWithEmailAndPassword(email, password).then((res) => {
-        setUser(res);
+        dispatch(setLoggedInUser(res));
         navigate(from);
+        reset({});
       });
     }
-    reset({});
   };
+  console.log(user);
 
   return (
     <div className='login-contain'>

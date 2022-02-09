@@ -98,7 +98,7 @@ const Properties = ({ selectedId, shape, onChangeHandler }) => {
           <FormControl
             name='fill'
             type='color'
-            defaultValue={shape?.color}
+            defaultValue={shape?.fill}
             placeholder='Enter Color'
             aria-label='color'
             aria-describedby='color'
