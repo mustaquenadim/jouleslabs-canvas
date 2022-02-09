@@ -146,6 +146,12 @@ const Canvas = () => {
     setCanvas(currentShapes);
   };
 
+  // delete shape
+  const handleDeleteShape = (id) => {
+    const currentShapes = canvas.shapes.filter((shape) => shape.id !== id);
+    setCanvas({ ...canvas, shapes: currentShapes });
+  };
+
   const [newEditedText, setNewEditedText] = useState({});
   const handleTextareaKeyDown = (e) => {
     if (e.keyCode === 13) {
@@ -281,7 +287,7 @@ const Canvas = () => {
                     aria-describedby='title'
                     className='border-0 shadow-none'
                   />
-                  <AiFillDelete className='icon' />
+                  <AiFillDelete className='icon' onClick={() => handleDeleteShape(id)} />
                 </InputGroup>
               ))}
             </Card>
