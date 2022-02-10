@@ -17,8 +17,7 @@ import { FaShapes } from 'react-icons/fa';
 const Home = () => {
   const dispatch = useDispatch();
   const canvasCollection = useSelector((state) => state.canvas.canvasCollection);
-  const isAuthenticated = useSelector((state) => state.user.isAuthenticated);
-  console.log(isAuthenticated);
+  const loggedInUser = useSelector((state) => state.user.profile);
 
   const newCanvas = () => ({
     id: canvasCollection.length + 1,
@@ -27,15 +26,17 @@ const Home = () => {
     shapes: [],
   });
 
+  console.log(canvasCollection);
+
   return (
     <>
-      {!isAuthenticated && (
+      {!loggedInUser?.isSignedIn && (
         <div id='landing-page'>
           <h1 className='text-white'>Welcome to JoulesLabs Canvas</h1>
           <h5 className='text-uppercase'>Draw your imagination</h5>
         </div>
       )}
-      {isAuthenticated && (
+      {loggedInUser?.isSignedIn && (
         <Container>
           <div id='your-canvases' className='my-5'>
             <h2>Your Canvases</h2>

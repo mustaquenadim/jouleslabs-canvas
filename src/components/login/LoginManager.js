@@ -54,11 +54,22 @@ const updateUserName = (name) => {
     .catch((error) => console.log(error.message));
 };
 
+const getToken = () => {
+  const user = firebase.auth().currentUser;
+  user
+    .getIdToken()
+    .then((token) => localStorage.setItem('token', token))
+    .catch((error) => console.log(error.message));
+};
+
 export const signInWithEmailAndPassword = (email, password) => {
   return firebase
     .auth()
     .signInWithEmailAndPassword(email, password)
-    .then((res) => handleResponse(res))
+    .then((res) => {
+      getToken();
+      return handleResponse(res);
+    })
     .catch((error) => console.log(error.message));
 };
 

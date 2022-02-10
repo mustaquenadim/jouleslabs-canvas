@@ -13,16 +13,15 @@ import '../../styles/common/header.scss';
 const Header = () => {
   const location = useLocation();
   const dispatch = useDispatch();
-  const user = useSelector((state) => state.user);
-  console.log(user);
+  const loggedInUser = useSelector((state) => state.user.profile);
 
   initializeLoginFramework();
   const Logout = () => {
-    console.log('I am logged out!');
     handleSignOut().then((res) => {
       dispatch(setLoggedInUser(res));
     });
   };
+
   return (
     <Navbar expand='lg' fixed='top'>
       <Container>
@@ -36,23 +35,23 @@ const Header = () => {
           />{' '}
           JoulesLabs Canvas
         </Navbar.Brand>
-        {!user.isAuthenticated && !location.pathname.includes('/login') && (
+        {!loggedInUser?.isSignedIn && !location.pathname.includes('/login') && (
           <Button as={Link} to='/login'>
             Sign Up
           </Button>
         )}
-        {user.isAuthenticated && (
+        {loggedInUser?.isSignedIn && (
           <NavDropdown
             title={
               <img
                 className='thumbnail-image'
-                src={user?.profile?.payload?.userPhoto}
+                src={loggedInUser?.profile?.payload?.userPhoto}
                 alt='user_pic'
               />
             }
           >
             <NavDropdown.Item as={Link} to='/'>
-              {user?.profile?.payload?.userName}
+              {loggedInUser?.userName}
             </NavDropdown.Item>
             <NavDropdown.Item as={Link} to='/'>
               My Canvases

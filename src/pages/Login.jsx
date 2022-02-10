@@ -77,13 +77,13 @@ const Login = () => {
 
     if (!newUser && email && password) {
       signInWithEmailAndPassword(email, password).then((res) => {
+        // getIdToken();
         dispatch(setLoggedInUser(res));
         navigate(from);
         reset({});
       });
     }
   };
-  console.log(user);
 
   return (
     <div className='login-contain'>

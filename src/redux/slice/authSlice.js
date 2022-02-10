@@ -3,12 +3,10 @@ import { createSlice } from '@reduxjs/toolkit';
 const authSlice = createSlice({
   name: 'user',
   initialState: {
-    isAuthenticated: false,
     profile: {},
   },
   reducers: {
-    setLoggedInUser: (state, payload) => {
-      state.isAuthenticated = true;
+    setLoggedInUser: (state, { payload }) => {
       state.profile = payload;
     },
   },

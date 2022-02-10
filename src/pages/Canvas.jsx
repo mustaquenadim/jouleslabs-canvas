@@ -32,9 +32,11 @@ import TriangleShape from '../components/canvas/TriangleShape';
 
 // redux
 import { useParams } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
+import { updateEditedCanvas } from '../redux/slice/canvasSlice';
 
 const Canvas = () => {
+  const dispatch = useDispatch();
   const [canvas, setCanvas] = useState({});
   const [shape, setShape] = useState({});
   const [selectedId, selectShape] = useState(null);
@@ -202,9 +204,8 @@ const Canvas = () => {
 
   // save canvas
   const handleSaveData = () => {
-    console.log('saving data on localstorage!');
-    localStorage.setItem('canvas', [...canvas]);
-    // localStorage.clear();
+    console.log('saving data');
+    dispatch(updateEditedCanvas(canvas));
   };
 
   // export canvas
@@ -256,6 +257,8 @@ const Canvas = () => {
       setCanvas({ ...canvas, shapes: shape });
     }
   };
+
+  console.log(canvas);
 
   return (
     <>
