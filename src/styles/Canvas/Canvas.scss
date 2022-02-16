@@ -29,6 +29,10 @@
   }
 
   .shape-items {
+    div[role='presentation'] {
+      display: flex;
+      flex-direction: column-reverse;
+    }
     .icon {
       margin: 8px;
       padding: 3px;

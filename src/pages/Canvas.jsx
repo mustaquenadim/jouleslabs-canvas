@@ -1,5 +1,8 @@
 import { useRef, useState, useEffect } from 'react';
 
+// imported react drag listview
+import ReactDragListView from 'react-drag-listview';
+
 // imported react bootstrap components
 import {
   Button,
@@ -13,6 +16,7 @@ import {
 } from 'react-bootstrap';
 
 // imported react icons
+import { MdOutlineDragIndicator } from 'react-icons/md';
 import { AiFillDelete } from 'react-icons/ai';
 
 // imported react konva components
@@ -120,32 +124,50 @@ const Canvas = () => {
 
   // create a rectangle
   const handleCreateRect = () => {
-    const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newRect() }] };
+    const currentShapes = { ...canvas, shapes: [{ ...newRect() }, ...canvas.shapes] };
     setCanvas(currentShapes);
   };
 
   // create a circle
   const handleCreateCircle = () => {
-    const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newCircle() }] };
+    const currentShapes = { ...canvas, shapes: [{ ...newCircle() }, ...canvas.shapes] };
     setCanvas(currentShapes);
   };
 
   // create a star
   const handleCreateStar = () => {
-    const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newStar() }] };
+    const currentShapes = { ...canvas, shapes: [{ ...newStar() }, ...canvas.shapes] };
     setCanvas(currentShapes);
   };
 
   // create a triangle
   const handleCreateTriangle = () => {
-    const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newTriangle() }] };
+    const currentShapes = { ...canvas, shapes: [{ ...newTriangle() }, ...canvas.shapes] };
     setCanvas(currentShapes);
   };
 
   // write text
   const handleAddText = () => {
-    const currentShapes = { ...canvas, shapes: [...canvas.shapes, { ...newText() }] };
+    const currentShapes = { ...canvas, shapes: [{ ...newText() }, ...canvas.shapes] };
     setCanvas(currentShapes);
+  };
+
+  // const that = this;
+  const dragProps = {
+    onDragEnd(fromIndex, toIndex) {
+      const data = [...canvas.shapes];
+      const item = data.splice(fromIndex, 1)[0];
+      data.splice(toIndex, 0, item);
+      setCanvas({ ...canvas, shapes: data });
+    },
+    nodeSelector: 'div',
+    handleSelector: 'a',
+  };
+  console.log('canvas -> ', canvas);
+
+  const onTextChange = (e, key) => {
+    canvas.shapes[key].name = e.target.value;
+    setCanvas({ ...canvas });
   };
 
   // delete shape
@@ -258,7 +280,7 @@ const Canvas = () => {
     }
   };
 
-  console.log(canvas);
+  // console.log(canvas);
 
   return (
     <>
@@ -279,20 +301,26 @@ const Canvas = () => {
             {/* shapes */}
             <Card className='shape-items p-4 border-0'>
               <h3 className='text-center'>Shapes</h3>
-
-              {canvas?.shapes?.map(({ id, name }, key) => (
-                <InputGroup key={key} className='mb-3 border d-flex align-items-center'>
-                  <FormControl
-                    type='text'
-                    placeholder='Add a Shape first'
-                    defaultValue={name}
-                    aria-label='title'
-                    aria-describedby='title'
-                    className='border-0 shadow-none'
-                  />
-                  <AiFillDelete className='icon' onClick={() => handleDeleteShape(id)} />
-                </InputGroup>
-              ))}
+              <ReactDragListView {...dragProps}>
+                {canvas?.shapes?.reverse()?.map(({ id, name }, key) => (
+                  <InputGroup key={key} className='mb-3 border d-flex align-items-center'>
+                    <a>
+                      <MdOutlineDragIndicator />
+                    </a>
+                    <FormControl
+                      useRef={name}
+                      type='text'
+                      placeholder='Add a Shape first'
+                      onChange={(e) => onTextChange(e, key)}
+                      value={name}
+                      aria-label='title'
+                      aria-describedby='title'
+                      className='border-0 shadow-none'
+                    />
+                    <AiFillDelete className='icon' onClick={() => handleDeleteShape(id)} />
+                  </InputGroup>
+                ))}
+              </ReactDragListView>
             </Card>
             {/* end shapes */}
           </Col>

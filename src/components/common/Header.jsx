@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect, useState } from 'react';
 import { Button, Container, Navbar, NavDropdown } from 'react-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useLocation } from 'react-router-dom';
@@ -11,9 +11,22 @@ import { handleSignOut, initializeLoginFramework } from '../login/LoginManager';
 import '../../styles/common/header.scss';
 
 const Header = () => {
+  const [navStyle, setNavStyle] = useState({
+    backgroundColor: 'transparent',
+  });
   const location = useLocation();
   const dispatch = useDispatch();
   const loggedInUser = useSelector((state) => state.user.profile);
+
+  useEffect(() => {
+    window.onscroll = () => {
+      if (window.pageYOffset > 100) {
+        setNavStyle({ color: '#fff', backgroundColor: '#040404', transition: '0.7s' });
+      } else {
+        setNavStyle({ color: '#040404', backgroundColor: 'transparent' });
+      }
+    };
+  }, []);
 
   initializeLoginFramework();
   const Logout = () => {
@@ -23,7 +36,7 @@ const Header = () => {
   };
 
   return (
-    <Navbar expand='lg' fixed='top'>
+    <Navbar expand='lg' fixed='top' style={navStyle}>
       <Container>
         <Navbar.Brand as={Link} to='/'>
           <img
